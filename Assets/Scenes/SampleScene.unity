@@ -4409,7 +4409,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocidad: 5
-  fuerzaSalto: 7
+  fuerzaSalto: 15
   camara: {fileID: 963194228}
 --- !u!136 &1385242679
 CapsuleCollider:
@@ -5989,11 +5989,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52da0cc0bf6d9b44490ecc6eeb533a61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  centroDeMasa: {fileID: 1385242682}
-  velocidadOrbita: 100
+  player: {fileID: 1385242682}
+  velocidadOrbita: 200
   destroyableTag: destruir
   destructionRange: 1
-  playerTag: player
 --- !u!1 &2050642220
 GameObject:
   m_ObjectHideFlags: 0
