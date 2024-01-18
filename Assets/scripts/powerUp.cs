@@ -5,7 +5,7 @@ using UnityEngine;
 public class powerUp : MonoBehaviour
 {
     public Transform player; // Referencia al jugador
-    public float velocidadOrbita = 10f;
+    public float velocidadOrbita = 5f;
     public string destroyableTag = "destruir"; // Etiqueta del objeto que se puede destruir
     public float destructionRange = 1f; // Rango en el que el objeto será destruido
     private bool isPickedUp = false; // Indica si el power-up ha sido recogido
@@ -24,7 +24,7 @@ public class powerUp : MonoBehaviour
         if (other.transform == player) // Si el jugador pasa por encima del power-up
         {
             isPickedUp = true; // El power-up ha sido recogido
-            transform.position = player.position + new Vector3((float)0.5, (float)0.5 ,(float)0.5); // La esfera se coloca cerca del jugador
+            transform.position = player.position + new Vector3(0,0,0); // La esfera se coloca cerca del jugador
         }
     }
 
