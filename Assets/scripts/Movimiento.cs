@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class movimiento : MonoBehaviour
 {
@@ -6,7 +7,7 @@ public class movimiento : MonoBehaviour
     public float fuerzaSalto = 7f;
     public Transform camara; // Referencia a la cámara
     private Rigidbody rb;
-    private bool enSuelo = true;
+    private bool puedeSaltar = true;
 
     void Start()
     {
@@ -24,18 +25,17 @@ public class movimiento : MonoBehaviour
 
         rb.velocity = new Vector3(direccion.x * velocidad, rb.velocity.y, direccion.z * velocidad);
 
-        if (Input.GetButtonDown("Jump") && enSuelo)
+        if (Input.GetButtonDown("Jump") && puedeSaltar)
         {
             rb.AddForce(new Vector3(0, fuerzaSalto, 0), ForceMode.Impulse);
-            enSuelo = false;
+            puedeSaltar = false;
+            StartCoroutine(EsperarSegundos(1));
         }
     }
 
-    void OnCollisionEnter(Collision collision)
+    IEnumerator EsperarSegundos(int segundos)
     {
-        if (collision.gameObject.CompareTag("Suelo"))
-        {
-            enSuelo = true;
-        }
+        yield return new WaitForSeconds(segundos);
+        puedeSaltar = true;
     }
 }
