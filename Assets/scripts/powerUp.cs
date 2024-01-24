@@ -24,7 +24,7 @@ public class powerUp : MonoBehaviour
         if (other.transform == player) // Si el jugador pasa por encima del power-up
         {
             isPickedUp = true; // El power-up ha sido recogido
-            transform.position = player.position + new Vector3(0,0,0); // La esfera se coloca cerca del jugador
+            transform.position = player.position + new Vector3(0,2,0); // La esfera se coloca cerca del jugador
         }
     }
 

@@ -32,35 +32,28 @@ public class movimiento : MonoBehaviour
         anim.SetFloat("velocidadY", y);
         anim.SetFloat("velocidadX", x);
 
-        // Calcula la dirección de movimiento basada en la rotación de la cámara
-        //Vector3 direccion = (camara.forward * y + camara.right * x).normalized;
-        //direccion.y = 0f; // Ignora la rotación de la cámara alrededor del eje X
-
-        //rb.velocity = new Vector3(direccion.x * velocidad, rb.velocity.y, direccion.z * velocidad);
-
-        if ((Input.GetButtonDown("Jump")) && puedeSaltar )
+        if ((Input.GetButtonDown("Jump")) && puedeSaltar)
         {
             if (salta == false)
             {
                 rb.AddForce(new Vector3(0, fuerzaSalto, 0), ForceMode.Impulse);
                 puedeSaltar = false;
-                 StartCoroutine(EsperarSegundos(1));
+                StartCoroutine(EsperarSegundos(1));
                 anim.SetTrigger("jump");
                 salta = true;
-
-
             }
         }
-    void saltando()
-        {
+    }
 
-            salta = false;
-        }
+    void saltando()
+    {
+        salta = false;
+    }
+
     IEnumerator EsperarSegundos(int segundos)
     {
         yield return new WaitForSeconds(segundos);
         puedeSaltar = true;
-    }
+        saltando(); 
     }
 }
-    
