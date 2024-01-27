@@ -5,7 +5,7 @@ using UnityEngine;
 public class movimiento : MonoBehaviour
 {
     public float velocidad = 5f;
-    public float velocidadr = 200f;
+    public float velocidadRotacion = 400f;
     public float fuerzaSalto = 7f; // Fuerza del salto
     private Rigidbody rb; // Referencia al Rigidbody
     public Transform camara; // Referencia a la cámara
@@ -27,7 +27,7 @@ public class movimiento : MonoBehaviour
         float y = Input.GetAxisRaw("Vertical");
 
         transform.Translate(0, 0, y * Time.deltaTime * velocidad);
-        transform.Rotate(0, x * Time.deltaTime * velocidadr, 0);
+        transform.Rotate(0, x * Time.deltaTime * velocidadRotacion, 0);
 
         anim.SetFloat("velocidadY", y);
         anim.SetFloat("velocidadX", x);
