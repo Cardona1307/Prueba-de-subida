@@ -23,6 +23,13 @@ public class SubeVida : MonoBehaviour
             if (currentDamageTime > damageTime)
             {
                 vidaPlayer.vida += cantidad;
+                // Comprueba si la vida del jugador ha alcanzado el máximo
+                if (vidaPlayer.vida >= 100)
+                {
+                    // Destruye este objeto
+                    Destroy(gameObject);
+                }
+
                 currentDamageTime = 0.0f;
 
                 // Comprueba si la vida del jugador ha alcanzado el máximo

@@ -1,5 +1,6 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-
 public class fantasma : MonoBehaviour
 {
     public float velocidad = 5f;
