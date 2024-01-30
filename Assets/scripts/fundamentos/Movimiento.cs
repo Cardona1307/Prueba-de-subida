@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class movimiento : MonoBehaviour
 {
-    public float velocidad = 5f;
+    public float velocidad = 7f;
     public float velocidadRotacion = 400f;
     public float fuerzaSalto = 7f; // Fuerza del salto
     private Rigidbody rb; // Referencia al Rigidbody
@@ -12,6 +12,8 @@ public class movimiento : MonoBehaviour
     private Animator anim;
     private bool puedeSaltar = true;
     public bool salta = false;
+    public float velocidadSprint = 10f; // Velocidad del sprint
+    private bool puedeSprintar = true; // Controla si el sprint está disponible
 
     void Start()
     {
@@ -26,6 +28,14 @@ public class movimiento : MonoBehaviour
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
 
+        // Comprueba si el jugador ha presionado la tecla "shift" y si el sprint está disponible
+        if (Input.GetKey(KeyCode.LeftShift) && puedeSprintar)
+        {
+            velocidad = velocidadSprint; // Aumenta la velocidad
+            puedeSprintar = false; // Desactiva el sprint
+            StartCoroutine(Sprint());
+        }
+
         transform.Translate(0, 0, y * Time.deltaTime * velocidad);
         transform.Rotate(0, x * Time.deltaTime * velocidadRotacion, 0);
 
@@ -39,7 +49,7 @@ public class movimiento : MonoBehaviour
                 rb.AddForce(new Vector3(0, fuerzaSalto, 0), ForceMode.Impulse);
                 puedeSaltar = false;
                 StartCoroutine(EsperarSegundos(1));
-                anim.SetTrigger("jump");
+
                 salta = true;
             }
         }
@@ -54,6 +64,14 @@ public class movimiento : MonoBehaviour
     {
         yield return new WaitForSeconds(segundos);
         puedeSaltar = true;
-        saltando(); 
+        saltando();
+    }
+
+    IEnumerator Sprint()
+    {
+        yield return new WaitForSeconds(5); // Espera 5 segundos
+        velocidad = 7f; // Restaura la velocidad
+        yield return new WaitForSeconds(55); // Espera 55 segundos adicionales
+        puedeSprintar = true; // Reactiva el sprint
     }
 }

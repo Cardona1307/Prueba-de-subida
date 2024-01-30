@@ -9,6 +9,7 @@ TagManager:
   - player
   - vida
   - Jugador
+  - moneda
   layers:
   - Default
   - TransparentFX
