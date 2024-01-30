@@ -3656,7 +3656,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocidad: 7
-  velocidadRotacion: 250
+  velocidadRotacion: 450
   fuerzaSalto: 5
   camara: {fileID: 1865983324}
   salta: 0
