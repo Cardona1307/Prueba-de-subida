@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class fantasma : MonoBehaviour
+
+public class Fantasma : MonoBehaviour
 {
     public float velocidad = 5f;
     public float distanciaAtaque = 1f;
@@ -13,30 +14,33 @@ public class fantasma : MonoBehaviour
 
     void Start()
     {
-        // Encuentra al jugador en la escena usando la etiqueta y obtén el componente SistemaVida
+        // Find the player in the scene using the tag and get the SistemaVida component
         jugador = GameObject.FindGameObjectWithTag("Jugador").transform;
         sistemaVidaJugador = jugador.GetComponent<SistemaVida>();
         vidaAnterior = sistemaVidaJugador.vida;
 
-        // Obtén el componente Rigidbody y configúralo para ignorar la física
+        // Get the Rigidbody component and set it to kinematic to avoid physics interactions
         rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
     }
 
     void Update()
     {
-        // Mueve al fantasma hacia el jugador
+        // Move the ghost towards the player
         Vector3 direccion = (jugador.position - transform.position).normalized;
         rb.MovePosition(transform.position + direccion * velocidad * Time.deltaTime);
 
-        // Rota al fantasma para que mire hacia el jugador
+        // Rotate the ghost to face the player
         Quaternion rotacion = Quaternion.LookRotation(direccion);
         rb.MoveRotation(rotacion);
 
-        // Si el fantasma está lo suficientemente cerca del jugador, haz daño
+        // If the ghost is close enough to the player, deal damage
         if (Vector3.Distance(transform.position, jugador.position) <= distanciaAtaque)
         {
+            // Reduce player's health without pushing them
             sistemaVidaJugador.vida -= daño * Time.deltaTime;
+
+            // Update the health bar if the player's health changed
             if (sistemaVidaJugador.vida != vidaAnterior)
             {
                 sistemaVidaJugador.ActualizarBarraVida();
@@ -45,3 +49,4 @@ public class fantasma : MonoBehaviour
         }
     }
 }
+

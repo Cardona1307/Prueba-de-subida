@@ -74,4 +74,17 @@ public class movimiento : MonoBehaviour
         yield return new WaitForSeconds(55); // Espera 55 segundos adicionales
         puedeSprintar = true; // Reactiva el sprint
     }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemigo"))
+        {
+            
+            Animator anim = GetComponent<Animator>();
+            anim.SetTrigger("GetHit");
+        }
+    }
+
+
+
 }

@@ -10,6 +10,7 @@ public class SistemaVida : MonoBehaviour
     public Image Vida; // La barra de vida verde
 
     private float vidaAnterior;
+    private bool estaVivo = true;
 
     void Start()
     {
@@ -25,16 +26,18 @@ public class SistemaVida : MonoBehaviour
             ActualizarBarraVida();
             vidaAnterior = vida;
 
-            // Verifica si la vida del jugador ha llegado a 0
-            if (vida <= 0)
+            if (vida <= 0 && estaVivo)
             {
-                // Destruye el objeto del jugador
-                Destroy(gameObject);
+
+                Animator anim = GetComponent<Animator>();
+                anim.SetTrigger("morir");
+                estaVivo = false;
+
             }
+
         }
     }
-
-    public void ActualizarBarraVida()
+public void ActualizarBarraVida()
     {
         float vidaNormalizada = vida / 100;
         BarraVida.fillAmount = vidaNormalizada;

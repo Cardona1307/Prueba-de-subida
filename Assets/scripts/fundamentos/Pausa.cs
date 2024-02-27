@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Pausa : MonoBehaviour
 {
@@ -43,4 +44,11 @@ public class Pausa : MonoBehaviour
         Time.timeScale = 1;
         pauseMenuUI.SetActive(false);
     }
+
+    public void SalirMenú()
+    {
+        SceneManager.LoadScene(0);
+
+    }
+
 }
