@@ -11,9 +11,7 @@ public class Fantasma : MonoBehaviour
     private SistemaVida sistemaVidaJugador;
     private Rigidbody rb;
     private float vidaAnterior;
-    private bool esPerseguido = true;
-    private float tiempoEscapando = 0f;
-    private float tiempoEscapandoLimite = 3f; // Tiempo límite para escapar en segundos
+    private Light luzJugador; // Referencia a la luz del jugador
 
     void Start()
     {
@@ -22,23 +20,19 @@ public class Fantasma : MonoBehaviour
         vidaAnterior = sistemaVidaJugador.vida;
         rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
+
+        luzJugador = GameObject.FindGameObjectWithTag("Linterna").GetComponent<Light>(); // Asigna la luz del jugador
     }
 
     void Update()
     {
-        if (esPerseguido)
+        if (luzJugador.enabled && Vector3.Distance(transform.position, luzJugador.transform.position) <= luzJugador.range)
         {
-            PerseguirJugador();
+            Escapar();
         }
         else
         {
-            Escapar();
-            tiempoEscapando += Time.deltaTime;
-            if (tiempoEscapando >= tiempoEscapandoLimite)
-            {
-                tiempoEscapando = 0f;
-                esPerseguido = true; // Vuelve a perseguir al jugador
-            }
+            PerseguirJugador();
         }
     }
 
@@ -56,17 +50,6 @@ public class Fantasma : MonoBehaviour
             {
                 sistemaVidaJugador.ActualizarBarraVida();
                 vidaAnterior = sistemaVidaJugador.vida;
-            }
-        }
-
-        // Comprobar si la luz del jugador alcanza al fantasma
-        GameObject jugadorObjeto = GameObject.FindGameObjectWithTag("Jugador");
-        if (jugadorObjeto != null)
-        {
-            Light luzJugador = jugadorObjeto.GetComponentInChildren<Light>();
-            if (luzJugador != null && luzJugador.enabled && Vector3.Distance(transform.position, luzJugador.transform.position) <= luzJugador.range)
-            {
-                esPerseguido = false;
             }
         }
     }

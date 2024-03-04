@@ -8,6 +8,7 @@ TagManager:
   - moneda
   - Jugador
   - Enemigo
+  - Linterna
   layers:
   - Default
   - TransparentFX
