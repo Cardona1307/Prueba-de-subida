@@ -1,90 +1,98 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 
 public class movimiento : MonoBehaviour
 {
     public float velocidad = 7f;
-    public float velocidadRotacion = 400f;
-    public float fuerzaSalto = 7f; // Fuerza del salto
-    private Rigidbody rb; // Referencia al Rigidbody
-    public Transform camara; // Referencia a la cámara
-    private Animator anim;
+    public float fuerzaSalto = 7f;
+    private Rigidbody rb;
+    public Transform camara;
+    public Vector3 offsetCamara = new Vector3(0f, 0.5f, 1.5f); // Offset para la posición de la cámara
     private bool puedeSaltar = true;
     public bool salta = false;
-    public float velocidadSprint = 10f; // Velocidad del sprint
-    private bool puedeSprintar = true; // Controla si el sprint está disponible
+    public float velocidadSprint = 10f;
+    private bool puedeSprintar = true;
 
-    void Start()
+    private void Start()
     {
-        // Obtiene la referencia al Rigidbody
         rb = GetComponent<Rigidbody>();
-        anim = GetComponent<Animator>();
-    }
 
-    void Update()
-    {
-        // Movimiento horizontal y vertical con WASD
-        float x = Input.GetAxisRaw("Horizontal");
-        float y = Input.GetAxisRaw("Vertical");
-
-        // Comprueba si el jugador ha presionado la tecla "shift" y si el sprint está disponible
-        if (Input.GetKey(KeyCode.LeftShift) && puedeSprintar)
+        // Ajustar la posición inicial de la cámara
+        if (camara != null)
         {
-            velocidad = velocidadSprint; // Aumenta la velocidad
-            puedeSprintar = false; // Desactiva el sprint
-            StartCoroutine(Sprint());
+            camara.position = transform.position + offsetCamara;
+            camara.parent = transform; // Hacer que la cámara sea hija del personaje
         }
 
-        transform.Translate(0, 0, y * Time.deltaTime * velocidad);
-        transform.Rotate(0, x * Time.deltaTime * velocidadRotacion, 0);
+        // Bloquear el cursor y hacerlo invisible
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
 
-        anim.SetFloat("velocidadY", y);
-        anim.SetFloat("velocidadX", x);
+    private void Update()
+    {
+        // Control de movimiento y rotación horizontal del jugador
+        float movimientoHorizontal = Input.GetAxisRaw("Horizontal");
+        float movimientoVertical = Input.GetAxisRaw("Vertical");
 
-        if ((Input.GetButtonDown("Jump")) && puedeSaltar)
+        // Control de sprint
+        if (Input.GetKey(KeyCode.LeftShift) && puedeSprintar)
         {
-            if (salta == false)
+            velocidad = velocidadSprint;
+        }
+        else
+        {
+            velocidad = 7f; // Si no se está presionando la tecla de sprint, volver a la velocidad normal
+        }
+
+        // Control de rotación horizontal del jugador por el mouse
+        transform.Rotate(0f, Input.GetAxis("Mouse X") * velocidad * Time.deltaTime, 0f);
+
+        // Control de la rotación del modelo del jugador para que siga la rotación horizontal de la cámara
+        if (camara != null)
+        {
+            Vector3 eulerAngles = camara.rotation.eulerAngles;
+            eulerAngles.x = 0f;
+            eulerAngles.z = 0f;
+            Quaternion targetRotation = Quaternion.Euler(eulerAngles);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.15f);
+        }
+
+        // Control del movimiento del jugador
+        Vector3 direccionMovimiento = camara.forward * movimientoVertical + camara.right * movimientoHorizontal;
+        direccionMovimiento.y = 0f; // Aseguramos que el movimiento sea horizontal
+        transform.position += direccionMovimiento.normalized * velocidad * Time.deltaTime;
+
+        // Control de salto
+        if (Input.GetButtonDown("Jump") && puedeSaltar)
+        {
+            if (!salta)
             {
-                rb.AddForce(new Vector3(0, fuerzaSalto, 0), ForceMode.Impulse);
+                rb.AddForce(Vector3.up * fuerzaSalto, ForceMode.Impulse);
                 puedeSaltar = false;
                 StartCoroutine(EsperarSegundos(1));
-
                 salta = true;
             }
         }
     }
 
-    void saltando()
+    private void saltando()
     {
         salta = false;
     }
 
-    IEnumerator EsperarSegundos(int segundos)
+    private IEnumerator EsperarSegundos(int segundos)
     {
         yield return new WaitForSeconds(segundos);
         puedeSaltar = true;
         saltando();
     }
 
-    IEnumerator Sprint()
+    private IEnumerator Sprint()
     {
-        yield return new WaitForSeconds(5); // Espera 5 segundos
-        velocidad = 7f; // Restaura la velocidad
-        yield return new WaitForSeconds(55); // Espera 55 segundos adicionales
-        puedeSprintar = true; // Reactiva el sprint
+        yield return new WaitForSeconds(2);
+        velocidad = 7f;
+        yield return new WaitForSeconds(30);
+        puedeSprintar = true;
     }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Enemigo"))
-        {
-            
-            Animator anim = GetComponent<Animator>();
-            anim.SetTrigger("GetHit");
-        }
-    }
-
-
-
 }
