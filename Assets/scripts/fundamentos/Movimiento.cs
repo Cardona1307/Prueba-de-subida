@@ -1,17 +1,25 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
+
 
 public class movimiento : MonoBehaviour
 {
-    public float velocidad = 7f;
-    public float fuerzaSalto = 7f;
+    public float velocidadNormal = 7f; // Velocidad base
+    public float velocidadSprint = 10f; // Velocidad de sprint
+    public float tiempoSprint = 5f; // Tiempo en segundos que dura el sprint
+    public float tiempoRecarga = 30f; // Tiempo en segundos de recarga del sprint
+    private bool puedeSprintar = true;
+    private bool sprintActivo = false;
+
     private Rigidbody rb;
     public Transform camara;
     public Vector3 offsetCamara = new Vector3(0f, 0.5f, 1.5f); // Offset para la posición de la cámara
     private bool puedeSaltar = true;
-    public bool salta = false;
-    public float velocidadSprint = 10f;
-    private bool puedeSprintar = true;
+    public float fuerzaSalto = 7f;
+
+    // Referencia a la barra de sprint
+    public Image BarraSprint;
 
     private void Start()
     {
@@ -36,17 +44,13 @@ public class movimiento : MonoBehaviour
         float movimientoVertical = Input.GetAxisRaw("Vertical");
 
         // Control de sprint
-        if (Input.GetKey(KeyCode.LeftShift) && puedeSprintar)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && puedeSprintar)
         {
-            velocidad = velocidadSprint;
-        }
-        else
-        {
-            velocidad = 7f; // Si no se está presionando la tecla de sprint, volver a la velocidad normal
+            StartCoroutine(Sprint());
         }
 
         // Control de rotación horizontal del jugador por el mouse
-        transform.Rotate(0f, Input.GetAxis("Mouse X") * velocidad * Time.deltaTime, 0f);
+        transform.Rotate(0f, Input.GetAxis("Mouse X") * velocidadNormal * Time.deltaTime, 0f);
 
         // Control de la rotación del modelo del jugador para que siga la rotación horizontal de la cámara
         if (camara != null)
@@ -61,38 +65,58 @@ public class movimiento : MonoBehaviour
         // Control del movimiento del jugador
         Vector3 direccionMovimiento = camara.forward * movimientoVertical + camara.right * movimientoHorizontal;
         direccionMovimiento.y = 0f; // Aseguramos que el movimiento sea horizontal
-        transform.position += direccionMovimiento.normalized * velocidad * Time.deltaTime;
+
+        if (sprintActivo) // Si el sprint está activo, usar la velocidad de sprint
+        {
+            transform.position += direccionMovimiento.normalized * velocidadSprint * Time.deltaTime;
+        }
+        else // Si no, usar la velocidad normal
+        {
+            transform.position += direccionMovimiento.normalized * velocidadNormal * Time.deltaTime;
+        }
 
         // Control de salto
         if (Input.GetButtonDown("Jump") && puedeSaltar)
         {
-            if (!salta)
+            rb.AddForce(Vector3.up * fuerzaSalto, ForceMode.Impulse);
+            puedeSaltar = false;
+            StartCoroutine(RecargarSalto(tiempoRecarga));
+        }
+
+        // Actualizar la barra de sprint
+        if (sprintActivo)
+        {
+            BarraSprint.fillAmount -= 1f / tiempoSprint * Time.deltaTime;
+            if (BarraSprint.fillAmount <= 0)
             {
-                rb.AddForce(Vector3.up * fuerzaSalto, ForceMode.Impulse);
-                puedeSaltar = false;
-                StartCoroutine(EsperarSegundos(1));
-                salta = true;
+                sprintActivo = false;
+                StartCoroutine(RecargarSprint(tiempoRecarga));
             }
+        }
+        else if (!puedeSprintar)
+        {
+            BarraSprint.fillAmount += 1f / tiempoRecarga * Time.deltaTime;
         }
     }
 
-    private void saltando()
+    private IEnumerator RecargarSalto(float tiempoRecarga)
     {
-        salta = false;
-    }
-
-    private IEnumerator EsperarSegundos(int segundos)
-    {
-        yield return new WaitForSeconds(segundos);
+        yield return new WaitForSeconds(tiempoRecarga);
         puedeSaltar = true;
-        saltando();
     }
 
     private IEnumerator Sprint()
     {
-        yield return new WaitForSeconds(2);
-        velocidad = 7f;
-        yield return new WaitForSeconds(30);
+        sprintActivo = true;
+        puedeSprintar = false;
+        yield return new WaitForSeconds(tiempoSprint);
+        sprintActivo = false;
+        StartCoroutine(RecargarSprint(tiempoRecarga));
+    }
+
+    private IEnumerator RecargarSprint(float tiempoRecarga)
+    {
+        yield return new WaitForSeconds(tiempoRecarga);
         puedeSprintar = true;
     }
 }
