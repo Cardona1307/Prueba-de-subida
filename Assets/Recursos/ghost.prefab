@@ -450,7 +450,7 @@ GameObject:
   - component: {fileID: 1258318706342356472}
   m_Layer: 0
   m_Name: Kid_ghost_v1:Ghost_Kid_S1
-  m_TagString: Untagged
+  m_TagString: Enemigo
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -691,10 +691,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9fee119e544ed3478099871c83537c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocidadPersecucion: 5
+  velocidadPersecucion: 12
   velocidadEscape: 10
   distanciaAtaque: 2
-  "da\xF1o": 7
+  "da\xF1o": 15
 --- !u!136 &768063076479747745
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -714,10 +714,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.145118
+  m_Radius: 0.103749186
   m_Height: 0.73960495
   m_Direction: 1
-  m_Center: {x: -0.0075883865, y: 0.33836842, z: 0.00768137}
+  m_Center: {x: -0.007588395, y: 0.3383684, z: -0.033687435}
 --- !u!1 &7703722811539785949
 GameObject:
   m_ObjectHideFlags: 0

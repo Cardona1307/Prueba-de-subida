@@ -18,6 +18,7 @@ public class Fantasma : MonoBehaviour
         jugador = GameObject.FindGameObjectWithTag("Jugador").transform;
         sistemaVidaJugador = jugador.GetComponent<SistemaVida>();
         vidaAnterior = sistemaVidaJugador.vida;
+        luzJugador = GetComponentInChildren<Light>(); // Busca la luz como un hijo del objeto fantasma
         rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
 
